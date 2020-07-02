@@ -1,0 +1,13 @@
+# Include your customized HAL commands here
+# This file will not be overwritten when you run stepconf again
+
+loadusr -Wn vfd hy_vfd -n vfd -d /dev/ttyUSB0 -p none -r 9600 -S 24000
+
+net spindle-cmd-rpm-abs				=> vfd.speed-command
+net spindle-cw 		motion.spindle-forward	=> vfd.spindle-forward
+net spindle-ccw		motion.spindle-reverse	=> vfd.spindle-reverse
+net spindle-on		motion.spindle-on	=> vfd.spindle-on
+net spindle-speed-fb				<= vfd.spindle-speed-fb
+
+net spindle-on         => parport.0.pin-17-out
+
