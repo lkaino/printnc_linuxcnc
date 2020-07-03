@@ -94,30 +94,8 @@ net home-xz => axis.2.home-sw-in
 net estop-out <= iocontrol.0.user-enable-out
 net estop-out => iocontrol.0.emc-enable-in
 
-#loadusr -W hal_manualtoolchange
-#net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
-#net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
-#net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
-#net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
-
-
-loadrt debounce cfg=2
-setp debounce.0.delay 50
-addf debounce.0 base-thread
-
-net tool-length-probe-in-raw debounce.0.0.in 	<= parport.0.pin-11-in-not
-net tool-length-probe-in-filtered		<= debounce.0.0.out
-net tool-length-probe-in-filtered		=> motion.probe-input
-
-#net motion.probe-input tool-length-probe-in  <= parport.0.pin-11-in-not
-#net tool-length-probe-in => motion.probe-input
-
-
-# FROM MANUAL TOOL CHANGE EXAMPLE
-# in case they were linked already
-unlinkp iocontrol.0.tool-change
-unlinkp iocontrol.0.tool-changed
-
-net tool-change-loop  iocontrol.0.tool-change  iocontrol.0.tool-changed
-
-
+loadusr -W hal_manualtoolchange
+net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
+net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
+net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
+net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared

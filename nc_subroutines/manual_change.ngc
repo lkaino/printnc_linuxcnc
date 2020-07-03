@@ -43,7 +43,7 @@ O200 if [#<_selected_tool> EQ 0]   ; an unload.
 O200    return [1] ; indicate success
 O200 endif
 
-; tool changed - move to tool sensor
+; tool changed - move to toolensor
 g53 g0 X #<_ini[toolsensor]x> Y #<_ini[toolsensor]y>
 g53 g0 Z #<_ini[toolsensor]z>
 
@@ -67,16 +67,14 @@ O300 endif
 ; see wether this was the reference tool:
 M66 P #<_ini[pins]reftool> L0
 
-(debug, checking if reference #5399, current reference is #1000)
 O400 if [#5399 EQ 1]
     #1000=#5063 (save reference tool length)
     M68 E #<_ini[pins]reflen> Q #1000
-    (debug,reference length is #1000)
+    (print,reference length is #1000)
 O400 else
      g43.1 z[#5063-#1000] (set new tool offset)
-     g4 P1
      M68 E #<_ini[pins]currlen> Q [#5063-#1000]
-     (debug,new length is #5063)
+     (print,new length is #5063)
 O400 endif 
 
 M65 P #<_ini[pins]probing> ; drop probing led
