@@ -7,9 +7,12 @@ loadrt hal_parport cfg="0x378 out"
 setp parport.0.reset-time 5000
 loadrt stepgen step_type=0,0,0
 
-loadrt or2
+loadrt or2 count=4
 # Y axis home OR
 addf or2.0 servo-thread
+addf or2.1 servo-thread
+addf or2.2 servo-thread
+addf or2.3 servo-thread
 
 addf parport.0.read base-thread
 addf stepgen.make-pulses base-thread
@@ -94,8 +97,3 @@ net home-xz => axis.2.home-sw-in
 net estop-out <= iocontrol.0.user-enable-out
 net estop-out => iocontrol.0.emc-enable-in
 
-loadusr -W hal_manualtoolchange
-net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
-net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
-net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
-net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared

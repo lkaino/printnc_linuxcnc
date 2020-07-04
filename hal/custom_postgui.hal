@@ -1,0 +1,37 @@
+# Include your customized HAL commands here
+# The commands in this file are run after the AXIS GUI (including PyVCP panel) starts
+
+# **** Setup of spindle speed display using pyvcp -START ****
+# **** Use COMMANDED spindle velocity from LinuxCNC because no spindle encoder was specified
+
+net spindle-cmd-rpm-abs		=> pyvcp.spindle-setpoint
+net spindle-speed-fb		=> pyvcp.spindle-speed
+
+# **** force spindle at speed indicator true because we have no feedback ****
+
+net spindle-at-speed		=> pyvcp.spindle-at-speed-led
+net spindle-at-speed		=> vfd.spindle-at-speed
+
+setp vfd.enable 1
+
+#### PROBE SCREEN (START)
+#loadusr -W hal_manualtoolchange
+#net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
+#net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
+#net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
+#net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+
+# The next two lines are only needed if the pins had been connected before
+unlinkp iocontrol.0.tool-change
+unlinkp iocontrol.0.tool-changed
+
+# link to auto tool measurement toolchange, so you get the advantage of tool description on change dialog
+
+# this settings were moved to probe_screen.hal:
+net tool-change            probe.toolchange-change    <=   iocontrol.0.tool-change 
+net tool-changed           probe.toolchange-changed   <=   iocontrol.0.tool-changed
+net tool-prep-number       probe.toolchange-number    <=   iocontrol.0.tool-prep-number
+
+net tool-prep-loop         iocontrol.0.tool-prepare      <=   iocontrol.0.tool-prepared
+#### PROBE SCREEN (END)
+

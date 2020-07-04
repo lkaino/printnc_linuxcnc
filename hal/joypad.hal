@@ -1,0 +1,40 @@
+# for remote joypad
+loadusr -W hal_input -KRAL Gamepad
+loadrt mux4 count=1
+addf mux4.0 servo-thread
+
+# set the jog speed for the joypad again use numbers that make sense for your machine
+setp mux4.0.in0 200 	# default
+setp mux4.0.in1 50 	# slow
+setp mux4.0.in2 3000 	# fast
+
+# the following does the magic of setting the jog speeds
+#net remote-speed-slow <= input.0.btn-tl
+#net remote-speed-fast <= input.0.btn-tr
+
+net joy-speed-1 mux4.0.sel0 <= input.0.btn-tr
+net joy-speed-2 mux4.0.sel1 <= input.0.btn-tl
+net joy-speed-final halui.jog-speed <= mux4.0.out
+
+setp input.0.abs-rz-scale -127.5
+setp input.0.abs-y-scale -127.5
+
+net joy-x-jog halui.jog.0.analog <= input.0.abs-x-position 
+
+net joy-x-jog halui.jog.0.analog <= input.0.abs-x-position 
+net joy-y-jog halui.jog.1.analog <= input.0.abs-y-position 
+net joy-z-jog halui.jog.2.analog <= input.0.abs-rz-position 
+
+net joy-home-selected halui.joint.selected.home <= input.0.btn-y
+
+net joy-select-x-1  or2.1.in0		<= input.0.abs-x-is-pos
+net joy-select-x-2  or2.1.in1		<= input.0.abs-x-is-neg
+net joy-select-x halui.joint.0.select	<= or2.1.out
+
+net joy-select-y-1  or2.2.in0		<= input.0.abs-y-is-pos
+net joy-select-y-2  or2.2.in1		<= input.0.abs-y-is-neg
+net joy-select-y halui.joint.1.select 	<= or2.2.out
+
+net joy-select-z-1  or2.3.in0	<= input.0.abs-rz-is-pos
+net joy-select-z-2  or2.3.in1	<= input.0.abs-rz-is-neg
+net joy-select-z halui.joint.2.select 		<= or2.3.out

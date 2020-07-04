@@ -1,0 +1,8 @@
+# Probing with filtered input
+loadrt debounce cfg=2
+setp debounce.0.delay 50
+addf debounce.0 base-thread
+
+net tool-length-probe-in-raw debounce.0.0.in   <= parport.0.pin-11-in-not
+net tool-length-probe-in-filtered              <= debounce.0.0.out
+net tool-length-probe-in-filtered              => motion.probe-input
