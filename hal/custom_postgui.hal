@@ -14,16 +14,17 @@ net spindle-at-speed		=> vfd.spindle-at-speed
 
 setp vfd.enable 1
 
-# PROBING
+
+######## manual tool change
+
 net tool-change  motion.digital-out-01   gladevcp.change-led 
 net tool-changed gladevcp.changed        motion.digital-in-00
-net toolno       motion.analog-out-01    gladevcp.number
-
+net toolno       motion.analog-out-00    gladevcp.number
 
 net probing        motion.digital-out-02  gladevcp.probing-led
 net enable         motion.digital-out-03  gladevcp.enable
 #net probe-contact  gladevcp.probe-contact motion.probe-input 
 net reftool 	   gladevcp.reftool       motion.digital-in-01
 
-net reflen	   motion.analog-out-02   gladevcp.reflen
-net currlen	   motion.analog-out-03   gladevcp.currlen
+net reflen	   motion.analog-out-01   gladevcp.reflen
+net currlen	   motion.analog-out-02   gladevcp.currlen

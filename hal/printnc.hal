@@ -28,7 +28,6 @@ net spindle-cmd-rpm-abs <= motion.spindle-speed-out-abs
 net spindle-cmd-rps     <= motion.spindle-speed-out-rps
 net spindle-cmd-rps-abs <= motion.spindle-speed-out-rps-abs
 net spindle-at-speed    => motion.spindle-at-speed
-net dout-00 <= motion.digital-out-00
 
 net zstep           => parport.0.pin-02-out
 setp parport.0.pin-02-out-reset 1
@@ -43,10 +42,11 @@ net xstep           => parport.0.pin-08-out
 setp parport.0.pin-08-out-reset 1
 setp parport.0.pin-09-out-invert 1
 net xdir            => parport.0.pin-09-out
-setp parport.0.pin-14-out-invert 1
-net dout-00         => parport.0.pin-14-out
-setp parport.0.pin-16-out-invert 1
-net dout-00         => parport.0.pin-16-out
+
+net driver-enable         => parport.0.pin-14-out
+net driver-ref            => parport.0.pin-16-out
+sets driver-enable TRUE
+sets driver-ref TRUE
 
 net home-y-left  or2.0.in0	<= parport.0.pin-12-in-not
 net home-y-right or2.0.in1	<= parport.0.pin-13-in-not
@@ -97,10 +97,17 @@ net home-xz => axis.2.home-sw-in
 net estop-out <= iocontrol.0.user-enable-out
 net estop-out => iocontrol.0.emc-enable-in
 
-# FROM MANUAL TOOL CHANGE EXAMPLE
+
+
+
+
+
 # in case they were linked already
 unlinkp iocontrol.0.tool-change
 unlinkp iocontrol.0.tool-changed
 
+net tool-prep-loop iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
 net tool-change-loop  iocontrol.0.tool-change  iocontrol.0.tool-changed
+
+# rest is in gladevcp.hal
 
