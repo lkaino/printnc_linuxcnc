@@ -11,6 +11,7 @@ o<manual_change> sub
 
 G21 (TLO and toolchange position is in mm as per ini)
 G90 (absolute)
+G49 ; zero the tool offset
 
 ; move to toolchange position: z, then xy
 g53 g0 Z #<_ini[change_position]z>
@@ -18,6 +19,8 @@ g53 g0 X #<_ini[change_position]x> Y #<_ini[change_position]y>
 
 ; indicate tool number to be loaded
 M68 E #<_ini[pins]toolno> Q #<_selected_tool>
+
+(debug, selected tool #<_selected_tool>)
 
 ; enable table
 M64 P  #<_ini[pins]enable> 
@@ -63,21 +66,45 @@ O300 if [[#<_task> GT 0] and [#5070 EQ 0]]
 O300    return [-2] ; indicate probe contact failure to epilog
 O300 endif
 
+#<loop_counter> = 0
+#<up_avg> = 0 ; probe up average
+#<down_avg> = 0 ; probe down average
+O101 while [#<loop_counter> LE 5]
+	; probe up
+	G0 Z-0.05
+	G38.4 Z10 F5
+	#<up_avg>= [#<up_avg>+#5063]
+	; probe down
+    G38.3 Z #<_ini[toolsensor]maxprobe> F5
+    #<down_avg> = [#<down_avg>+#5063]
+	#<loop_counter> = [#<loop_counter> + 1]
+O101 endwhile
+
+#<up_avg> = [#<up_avg>/#<loop_counter>]
+#<down_avg> = [#<down_avg>/#<loop_counter>]
+#<total_avg> = [[#<up_avg>+#<down_avg>]/2]
+(debug, up #<up_avg>, down #<down_avg>, total #<total_avg>)
 
 ; see wether this was the reference tool:
 M66 P #<_ini[pins]reftool> L0
 
-(debug, checking if reference #5399, current reference is #1000)
+
 O400 if [#5399 EQ 1]
-    #1000=#5063 (save reference tool length)
+    #1000 = #<total_avg>
+    
     M68 E #<_ini[pins]reflen> Q #1000
-    (debug,reference length is #1000)
+    
+    G49 ; added to zero tool length offset
+    G10 L1 P#<_selected_tool> Z0
 O400 else
-     g43.1 z[#5063-#1000] (set new tool offset)
-     g4 P1
-     M68 E #<_ini[pins]currlen> Q [#5063-#1000]
-     (debug,new length is #5063)
+	#<diff> = [#<total_avg>-#1000]
+	(debug, total_avg #<total_avg>, diff #<diff>)
+	G10 L1 P#<_selected_tool> Z[#<diff>]
+	
+    M68 E #<_ini[pins]currlen> Q [#<diff>]
 O400 endif 
+
+G43
 
 M65 P #<_ini[pins]probing> ; drop probing led
 M65 P  #<_ini[pins]enable> ; disable table
