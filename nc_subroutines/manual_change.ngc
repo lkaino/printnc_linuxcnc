@@ -11,37 +11,27 @@ o<manual_change> sub
 
 G21 (TLO and toolchange position is in mm as per ini)
 G90 (absolute)
-G49 ; zero the tool offset
+G49 (zero the current tool offset)
 
 ; move to toolchange position: z, then xy
 g53 g0 Z #<_ini[change_position]z>
 g53 g0 X #<_ini[change_position]x> Y #<_ini[change_position]y>
 
-; indicate tool number to be loaded
-M68 E #<_ini[pins]toolno> Q #<_selected_tool>
-
-(debug, selected tool #<_selected_tool>)
-
-; enable table
-M64 P  #<_ini[pins]enable> 
-
 ; signal user to change tool
-M64 P  #<_ini[pins]change> 
-
+M101 P #<_hal[gladevcp.cmd-start-tool-change]> Q #<_selected_tool>
 ; and wait for acknowledgement
-M66 P #<_ini[pins]changed> L1 Q#<_ini[dwell]ack_secs>
-M65 P #<_ini[pins]change> ; drop change pin
+M66 P #<_hal[gladevcp.din-pin-num]> L1 Q#<_ini[dwell]ack_secs>
 
 
 ;see if we timed out
 O100 if [#5399 EQ -1]
-        M65 P  #<_ini[pins]enable> ; disable table
+        M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
 	O<restore> call [#<metric>] [#<absolute>] [#<feed>]
 O100    return [-1] ; indicate timeout failure to epilog
 O100 endif
 
 O200 if [#<_selected_tool> EQ 0]   ; an unload.
-        M65 P  #<_ini[pins]enable> ; disable table
+        M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
 	O<restore> call [#<metric>] [#<absolute>] [#<feed>]
 O200    return [1] ; indicate success
 O200 endif
@@ -51,10 +41,11 @@ g53 g0 X #<_ini[toolsensor]x> Y #<_ini[toolsensor]y>
 g53 g0 Z #<_ini[toolsensor]z>
 
 ; probe tool length
-M64 P  #<_ini[pins]probing> ; turn on probing led
+M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
+M101 P #<_hal[gladevcp.cmd-probing]> Q1
 
 F #<_ini[toolsensor]probefeed>
-G91 (relative mode)
+
 G38.3 Z #<_ini[toolsensor]maxprobe>
 
 ; we must execute this only in the milltask interpreter
@@ -62,55 +53,58 @@ G38.3 Z #<_ini[toolsensor]maxprobe>
 ; the milltask interpreter and 0 in the UI's
 
 O300 if [[#<_task> GT 0] and [#5070 EQ 0]]
-	O<restore> call [#<metric>] [#<absolute>] [#<feed>]
+    O<restore> call [#<metric>] [#<absolute>] [#<feed>]
 O300    return [-2] ; indicate probe contact failure to epilog
 O300 endif
 
 #<loop_counter> = 0
+
 #<up_avg> = 0 ; probe up average
+#<up_count> = 0
 #<down_avg> = 0 ; probe down average
 O101 while [#<loop_counter> LE 5]
-	; probe up
-	G0 Z-0.05
-	G38.4 Z10 F5
-	#<up_avg>= [#<up_avg>+#5063]
-	; probe down
+    ; probe up
+    ;G0 Z-0.05
+    
+    ; Use G38.5 as the probing might fail if the probe has already lost contact
+    G38.5 Z #<_ini[change_position]z> F5
+    
+    O400 if [#5070 EQ 1]
+        #<up_count> = [#<up_count> + 1]
+    O400 endif
+    
+    #<up_avg>= [#<up_avg>+#5063]
+    ; probe down
     G38.3 Z #<_ini[toolsensor]maxprobe> F5
     #<down_avg> = [#<down_avg>+#5063]
-	#<loop_counter> = [#<loop_counter> + 1]
+    #<loop_counter> = [#<loop_counter> + 1]
 O101 endwhile
 
-#<up_avg> = [#<up_avg>/#<loop_counter>]
+#<up_avg> = [#<up_avg>/#<up_count>]
 #<down_avg> = [#<down_avg>/#<loop_counter>]
 #<total_avg> = [[#<up_avg>+#<down_avg>]/2]
 (debug, up #<up_avg>, down #<down_avg>, total #<total_avg>)
 
-; see wether this was the reference tool:
-M66 P #<_ini[pins]reftool> L0
+G91 (relative mode)
 
-
-O400 if [#5399 EQ 1]
+O401 if [#<_hal[gladevcp.reftool]> EQ 1]
     #1000 = #<total_avg>
-    
-    M68 E #<_ini[pins]reflen> Q #1000
-    
     G49 ; added to zero tool length offset
     G10 L1 P#<_selected_tool> Z0
-O400 else
-	#<diff> = [#<total_avg>-#1000]
-	(debug, total_avg #<total_avg>, diff #<diff>)
-	G10 L1 P#<_selected_tool> Z[#<diff>]
-	
-    M68 E #<_ini[pins]currlen> Q [#<diff>]
-O400 endif 
+    M101 P #<_hal[gladevcp.cmd-tool-offset]> Q #<total_avg>
+O401 else
+    #<diff> = [#<total_avg>-#1000]
+    (debug, total_avg #<total_avg>, diff #<diff>)
+    G10 L1 P#<_selected_tool> Z[#<diff>]
+    M101 P #<_hal[gladevcp.cmd-reference-length]> Q #<diff>
+O401 endif 
 
 G43
 
-M65 P #<_ini[pins]probing> ; drop probing led
-M65 P  #<_ini[pins]enable> ; disable table
+M101 P #<_hal[gladevcp.cmd-probing]> Q0
+M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
 
 G90 (absolute)
-
 
 ; move back to toolchange position: z, then xy
 g53 g0 Z #<_ini[change_position]z>

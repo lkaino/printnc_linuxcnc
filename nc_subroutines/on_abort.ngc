@@ -3,8 +3,8 @@ o<on_abort> sub
 
 (print, on_abort executing)
 
-M65 P #<_ini[pins]change> ; drop change pin
-M65 P #<_ini[pins]probing> ; drop probing led
+M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
+M101 P #<_hal[gladevcp.cmd-probing]> S0
 
 o<reset_state> call
 
