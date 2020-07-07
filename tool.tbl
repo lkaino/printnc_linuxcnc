@@ -1,5 +1,5 @@
 T1 P1 D6.000000 Z-2.041757 ;6mm Flat Endmill wood
-T2 P2 D4.000000 ;XCAN: 4x4x50mm 90 degree
+T2 P2 D4.000000 Z-5.387958 ;XCAN: 4x4x50mm 90 degree
 T3 P3 D3.175000 ;3.175 mm compression end mill
 T4 P4 D4.000000 ;XCAN: 1 flute 4x28x50L Blue Coating
 T4 P4 D6.000000 ;XCAN: 1 flute 6x28x55L Blue Coating

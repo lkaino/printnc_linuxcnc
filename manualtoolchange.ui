@@ -23,26 +23,28 @@
     <property name="can_focus">False</property>
     <property name="window_position">mouse</property>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkFixed" id="fixed1">
+        <property name="height_request">400</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkFixed" id="fixed1">
+          <object class="GtkFixed" id="fixed2">
             <property name="height_request">245</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
               <object class="GtkLabel" id="lbl_tools_in_program">
+                <property name="width_request">350</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Tools in program</property>
+                <property name="label" translatable="yes">Tools in current program</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                   <attribute name="scale" value="1.2"/>
                 </attributes>
               </object>
               <packing>
-                <property name="x">15</property>
+                <property name="x">2</property>
                 <property name="y">2</property>
               </packing>
             </child>
@@ -114,23 +116,16 @@
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkHSeparator" id="hseparator2">
-            <property name="width_request">50</property>
+            <property name="width_request">300</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">10</property>
-            <property name="position">1</property>
+            <property name="x">20</property>
+            <property name="y">240</property>
           </packing>
         </child>
         <child>
@@ -138,7 +133,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkFixed" id="fixed2">
+              <object class="GtkFixed" id="fixed3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
@@ -159,6 +154,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="lbl_tool_change">
+                    <property name="width_request">350</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="ypad">5</property>
@@ -169,7 +165,7 @@
                     </attributes>
                   </object>
                   <packing>
-                    <property name="x">15</property>
+                    <property name="x">2</property>
                     <property name="y">5</property>
                   </packing>
                 </child>
@@ -179,6 +175,7 @@
                     <property name="can_focus">False</property>
                     <attributes>
                       <attribute name="foreground" value="#fdeb00000000"/>
+                      <attribute name="scale" value="1.2"/>
                     </attributes>
                   </object>
                   <packing>
@@ -192,11 +189,13 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">This tool was used to zero the Z axis for the work coordinate system.
+Please make sure that the tool length hasn't changed since!</property>
                     <property name="use_action_appearance">False</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
-                    <property name="x">20</property>
+                    <property name="x">82</property>
                     <property name="y">60</property>
                   </packing>
                 </child>
@@ -204,9 +203,7 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="y">250</property>
           </packing>
         </child>
         <child>
@@ -217,9 +214,7 @@
             <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="y">500</property>
           </packing>
         </child>
       </object>
