@@ -1,140 +1,226 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires gladevcp 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name number -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name operation -->
+      <column type="gchararray"/>
+      <!-- column-name color -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="EMC_Stat" id="vcp_stat1">
+    <signal name="file-loaded" handler="on_file_loaded" swapped="no"/>
+    <signal name="state-estop" handler="on_file_loaded" swapped="no"/>
+  </object>
   <object class="GtkWindow" id="window1">
+    <property name="can_focus">False</property>
+    <property name="window_position">mouse</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
-          <object class="HAL_Table" id="enable">
+          <object class="GtkFixed" id="fixed1">
+            <property name="height_request">245</property>
             <property name="visible">True</property>
-            <property name="n_rows">6</property>
-            <property name="n_columns">2</property>
+            <property name="can_focus">False</property>
             <child>
-              <object class="HAL_Button" id="changed">
-                <property name="label" translatable="yes">Change complete</property>
+              <object class="GtkLabel" id="lbl_tools_in_program">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Tools in program</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.2"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">15</property>
+                <property name="y">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="width_request">350</property>
+                <property name="height_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="hscrollbar_policy">never</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <child>
+                  <object class="GtkTreeView" id="treeview1">
+                    <property name="width_request">350</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="model">liststore1</property>
+                    <property name="headers_clickable">False</property>
+                    <property name="search_column">0</property>
+                    <property name="enable_grid_lines">both</property>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="col_tool_number">
+                        <property name="title">#</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cell_toolnum"/>
+                          <attributes>
+                            <attribute name="height">1</attribute>
+                            <attribute name="background">3</attribute>
+                            <attribute name="editable">0</attribute>
+                            <attribute name="font">1</attribute>
+                            <attribute name="size-points">5</attribute>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="description">
+                        <property name="title">Name</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cell_desc"/>
+                          <attributes>
+                            <attribute name="background">3</attribute>
+                            <attribute name="editable">0</attribute>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="operation">
+                        <property name="title">Operation</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cell_operation"/>
+                          <attributes>
+                            <attribute name="background">3</attribute>
+                            <attribute name="editable">0</attribute>
+                            <attribute name="text">2</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
               <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options"></property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_ToggleButton" id="reftool">
-                <property name="label" translatable="yes">Reference Tool</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options"></property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label1">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">probing:</property>
-              </object>
-              <packing>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_LED" id="probing-led">
-                <property name="visible">True</property>
-                <property name="pick_color_on">#1525ffff4fdc</property>
-                <property name="led_shape">2</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_LED" id="change-led">
-                <property name="visible">True</property>
-                <property name="pick_color_on">#fffff232127d</property>
-                <property name="led_shape">2</property>
-                <signal name="hal_pin_changed" handler="on_led_change"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="change-text">
-                <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="HAL_Button" id="probe-contact">
-                <property name="label" translatable="yes">Simulate probe 
-     contact</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="right_attach">2</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-                <property name="x_options"></property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_Label" id="reflen">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">label</property>
-                <property name="label_pin_type">1</property>
-                <property name="text_template">Reference Z length: %f</property>
-              </object>
-              <packing>
-                <property name="right_attach">2</property>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-                <property name="y_padding">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_Label" id="currlen">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">label</property>
-                <property name="label_pin_type">1</property>
-                <property name="text_template">Current Z length: %f</property>
-              </object>
-              <packing>
-                <property name="right_attach">2</property>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-                <property name="y_padding">4</property>
+                <property name="x">2</property>
+                <property name="y">30</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="padding">3</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
+          <object class="GtkHSeparator" id="hseparator2">
+            <property name="width_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_Table" id="tool_change_ui">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="HAL_Button" id="btn_changed">
+                    <property name="label" translatable="yes">Tool change ready</property>
+                    <property name="width_request">350</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="image_position">right</property>
+                  </object>
+                  <packing>
+                    <property name="x">5</property>
+                    <property name="y">90</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbl_tool_change">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="ypad">5</property>
+                    <property name="label" translatable="yes">Tool change</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="scale" value="1.2"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="x">15</property>
+                    <property name="y">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbl_tool_change_info">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <attributes>
+                      <attribute name="foreground" value="#fdeb00000000"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">35</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_CheckButton" id="reftool">
+                    <property name="label" translatable="yes">This is the reference tool</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">60</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <placeholder/>
+        </child>
+        <child>
+          <object class="ToolEdit" id="tooledit1">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
         </child>
       </object>
     </child>

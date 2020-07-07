@@ -17,4 +17,4 @@ setp vfd.enable 1
 
 ######## manual tool change
 
-net tool-changed gladevcp.changed        motion.digital-in-03
+net tool-changed gladevcp.btn_changed        motion.digital-in-03

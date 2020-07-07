@@ -80,24 +80,28 @@ O101 while [#<loop_counter> LE 5]
     #<loop_counter> = [#<loop_counter> + 1]
 O101 endwhile
 
-#<up_avg> = [#<up_avg>/#<up_count>]
-#<down_avg> = [#<down_avg>/#<loop_counter>]
-#<total_avg> = [[#<up_avg>+#<down_avg>]/2]
-(debug, up #<up_avg>, down #<down_avg>, total #<total_avg>)
+O401 if [#<up_count> GT 0]
+    #<up_avg> = [#<up_avg>/#<up_count>]
+    #<down_avg> = [#<down_avg>/#<loop_counter>]
+    #<total_avg> = [[#<up_avg>+#<down_avg>]/2]
+    (debug, up #<up_avg>, down #<down_avg>, total #<total_avg>)
+O401 else
+    #<total_avg> = 0
+O401 endif
 
 G91 (relative mode)
 
-O401 if [#<_hal[gladevcp.reftool]> EQ 1]
+O402 if [#<_hal[gladevcp.reftool]> EQ 1]
     #1000 = #<total_avg>
     G49 ; added to zero tool length offset
     G10 L1 P#<_selected_tool> Z0
     M101 P #<_hal[gladevcp.cmd-tool-offset]> Q #<total_avg>
-O401 else
+O402 else
     #<diff> = [#<total_avg>-#1000]
     (debug, total_avg #<total_avg>, diff #<diff>)
     G10 L1 P#<_selected_tool> Z[#<diff>]
     M101 P #<_hal[gladevcp.cmd-reference-length]> Q #<diff>
-O401 endif 
+O402 endif 
 
 G43
 

@@ -1,8 +1,16 @@
-T1 P1 D6.000000 Z+0.481391 ;3mm end mill 
-T2 P2 D1.500000 Z-84.699320 ;1.5mm  end mill 
-T3 P5 D5.000000 ;5mm tap drill 
-T4 P3 D16.000000 Z+4.400000 ;16 mm mill 
-T5 P6 D25.000000 Z+5.500000 ;25mm mill 
-T6 P4 D1.000000 Z+6.600000 ;1mm drill 
-T11 P11 D6.000000 Z-6.974836 ;added 20200703 
-T0 P0 ;probe 
+T1 P1 D6.000000 Z-2.041757 ;6mm Flat Endmill wood
+T2 P2 D4.000000 ;XCAN: 4x4x50mm 90 degree
+T3 P3 D3.175000 ;3.175 mm compression end mill
+T4 P4 D4.000000 ;XCAN: 1 flute 4x28x50L Blue Coating
+T4 P4 D6.000000 ;XCAN: 1 flute 6x28x55L Blue Coating
+T4 P4 D6.000000 ;XCAN: 1 flute 6x42x70L Blue Coating
+T5 P5 D6.000000 ;BB: 2 flute R3x6x12x50
+T6 P6 D2.350000 ;Guling: 60 Degree Solid Carbide Thread Milling Cutter
+T7 P7 D3.175000 ;Drillpro: 3.175mm 1 Flute
+T8 P8 D3.175000 ;1/8 Inch Shank Single Flute
+T9 P9 D3.175000 ;2 flute quarter inch
+T10 P10 D4.000000 ;Drillpro: Rough End Mill 4 Flutes HRC55 	AlTiN Nano Coated
+T11 P11 D3.000000 ;Drillpro: 2 Flutes 90 Degree HRC45
+T11 P11 D6.000000 Z+8.833249 ;6mm Flat Endmill wood copy
+T12 P12 D2.000000 ;Ball Nose Tungsten Carbide HRC55 
+T13 P13 D8.000000 ;Xuhan: HRC50 2 Flute
