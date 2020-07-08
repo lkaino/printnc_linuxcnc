@@ -2,6 +2,7 @@
 
 import hal
 import hal_glib
+import glib
 import os
 import linuxcnc
 import time
@@ -13,6 +14,9 @@ class HandlerClass:
     COLOR_SELECTED = "#41C718"
     COLOR_NOT_SELECTED = "#FFFFFF"
     
+    COL_TOOL_NAME_WIDTH = 0.60
+    COL_TOOL_OPERATION_WIDTH = 0.35
+    
     commands = [
         'cmd-start-tool-change',
         'cmd-stop-tool-change',
@@ -22,28 +26,13 @@ class HandlerClass:
         'cmd-tool-offset',
     ]
     
-    def on_led_change(self,hal_led,data=None):
-        '''
-        the gladevcp.change led had a transition
-        '''
-        if hal_led.hal_pin.get():
-            if self.halcomp["number"] > 0.0:
-                self.change_text.set_label("Insert too number %d" % (int(self.halcomp["number"])))
-            else:
-                self.change_text.set_label("Remove tool")
-        else:
-            self.change_text.set_label("")
-    
     def update_current_tool(self, current_tool_index):
-        print "################### updating current tool"
+        # This does not work for some reason, the color is not redrawn
         for i in range(0, len(self.liststore1)):
             if i == current_tool_index:
-                print "################### updating current tool + " + str(i)
-                self.liststore1[current_tool_index][1] = "kissa"
-                #self.liststore1[current_tool_index][self.COL_COLOR] = self.COLOR_SELECTED
+                self.liststore1[current_tool_index][self.COL_COLOR] = self.COLOR_SELECTED
             else:
-                print "################### updating current tool not + " + str(i)
-                #self.liststore1[current_tool_index][self.COL_COLOR] = self.COLOR_NOT_SELECTED
+                self.liststore1[current_tool_index][self.COL_COLOR] = self.COLOR_NOT_SELECTED
     
     def get_tool_name(self, tool_number):
         info = self.tooledit1.get_toolinfo(tool_number)
@@ -71,10 +60,9 @@ class HandlerClass:
         s.poll()
         self.current_tool_index = -1
         self.tools_in_file = self.get_tools_from_file(s.file)
-        print "####### Tools in file " + str(self.tools_in_file)
         self.update_tools_in_program(self.tools_in_file)
         self.ref_tool.set_state(True)
-
+        
     def __init__(self, halcomp,builder,useropts):
         self.inifile = linuxcnc.ini(os.environ["INI_FILE_NAME"])
         self.configpath = os.environ['CONFIG_DIR']
@@ -92,11 +80,6 @@ class HandlerClass:
             self.command_value_to_name[value] = command
             value = value + 1
         
-        din_pin = self.inifile.find("TOOL_CHANGE_PINS", "DIN_UI_PIN")
-        self.din_pin = "motion.digital-in-0" + str(din_pin)
-        self.halcomp.newpin('din-pin-num', hal.HAL_FLOAT, hal.HAL_IN)
-        hal.set_p(halcomp.getprefix() + "." + 'din-pin-num', din_pin)
-        
         self.gcode_command = hal_glib.GPin(halcomp.newpin("gcode-command", hal.HAL_FLOAT, hal.HAL_IN))
         self.gcode_param = hal_glib.GPin(halcomp.newpin("gcode-parameter", hal.HAL_FLOAT, hal.HAL_IN))
         self.gcode_command.connect("value-changed", self.command_from_gcode)
@@ -109,17 +92,21 @@ class HandlerClass:
         self.tooledit1.set_filename(self.toolfile)
         
         self.liststore1 = self.builder.get_object("liststore1")
+        self.treeview1 = self.builder.get_object("treeview1")
         
-        #self.cell_toolnum = self.builder.get_object("cell_toolnum")
-        #print str(dir(self.cell_toolnum))
-        #self.col_tool_number = self.builder.get_object("col_tool_number")
-        #self.col_tool_number.add_attribute(self.cell_toolnum, "foreground", self.COL_COLOR)
+        # Set tool table columns
+        tool_table_width = self.treeview1.get_property("width_request")
+        self.cell_desc = self.builder.get_object("cell_desc")
+        self.cell_desc.props.wrap_mode = pango.WRAP_WORD
+        self.cell_desc.props.wrap_width = int(self.COL_TOOL_NAME_WIDTH * tool_table_width)
+        self.cell_operation = self.builder.get_object("cell_operation")
+        self.cell_operation.props.wrap_mode = pango.WRAP_WORD
+        self.cell_operation.props.wrap_width = int(self.COL_TOOL_OPERATION_WIDTH * tool_table_width)
         
         self.current_tool_index = -1
 
     def parameter_from_gcode(self, hal_pin, data = None):
         self.parameter = hal_pin.get()
-        print "####### Got parameter " + str(self.parameter)
     
     def command_from_gcode(self, hal_pin, data = None):
         value = hal_pin.get()
@@ -129,7 +116,6 @@ class HandlerClass:
             parameter = ""
             if self.parameter is not None:
                 parameter = str(self.parameter)
-            print "##### Command from gcode: " + str(command) + ", parameter: " + parameter
             
             if command == 'cmd-start-tool-change':
                 hal.set_p("gladevcp.tool_change_ui", 'TRUE')
@@ -178,11 +164,8 @@ class HandlerClass:
                 match = re.search(pattern, line)
                 if match and match.group(1):
                     tool = int(match.group(1))
-#                    if len(tools) == 0:
                     tools.append((tool, operation))
                     operation = ""
-#                    elif tools[-1] != tool:
-#                        tools.append((tool, operation))
         return tools
                 
 def get_handlers(halcomp,builder,useropts):

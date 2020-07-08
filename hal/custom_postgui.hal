@@ -15,6 +15,5 @@ net spindle-at-speed		=> vfd.spindle-at-speed
 setp vfd.enable 1
 
 
-######## manual tool change
-
+# Tool change signal pin
 net tool-changed gladevcp.btn_changed        motion.digital-in-03

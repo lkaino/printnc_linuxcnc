@@ -14,13 +14,13 @@ G90 (absolute)
 G49 (zero the current tool offset)
 
 ; move to toolchange position: z, then xy
-g53 g0 Z #<_ini[change_position]z>
-g53 g0 X #<_ini[change_position]x> Y #<_ini[change_position]y>
+g53 g0 Z #<_ini[tool_change]change_pos_z>
+g53 g0 X #<_ini[tool_change]change_pos_x> Y #<_ini[tool_change]change_pos_y>
 
 ; signal user to change tool
 M101 P #<_hal[gladevcp.cmd-start-tool-change]> Q #<_selected_tool>
 ; and wait for acknowledgement
-M66 P #<_hal[gladevcp.din-pin-num]> L1 Q#<_ini[dwell]ack_secs>
+M66 P #<_ini[tool_change]signal_tool_change_din> L1 Q#<_ini[tool_change]timeout_secs>
 
 
 ;see if we timed out
@@ -37,16 +37,16 @@ O200    return [1] ; indicate success
 O200 endif
 
 ; tool changed - move to tool sensor
-g53 g0 X #<_ini[toolsensor]x> Y #<_ini[toolsensor]y>
-g53 g0 Z #<_ini[toolsensor]z>
+g53 g0 X #<_ini[tool_change]probe_pos_x> Y #<_ini[tool_change]probe_pos_y>
+g53 g0 Z #<_ini[tool_change]probe_pos_z>
 
 ; probe tool length
 M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
 M101 P #<_hal[gladevcp.cmd-probing]> Q1
 
-F #<_ini[toolsensor]probefeed>
+F #<_ini[tool_change]probe_feed>
 
-G38.3 Z #<_ini[toolsensor]maxprobe>
+G38.3 Z #<_ini[tool_change]max_probe_z>
 
 ; we must execute this only in the milltask interpreter
 ; or preview will break, so test for '#<_task>' which is 1 for 
@@ -67,7 +67,7 @@ O101 while [#<loop_counter> LE 5]
     ;G0 Z-0.05
     
     ; Use G38.5 as the probing might fail if the probe has already lost contact
-    G38.5 Z #<_ini[change_position]z> F5
+    G38.5 Z #<_ini[tool_change]change_pos_z> F5
     
     O400 if [#5070 EQ 1]
         #<up_count> = [#<up_count> + 1]
@@ -75,7 +75,7 @@ O101 while [#<loop_counter> LE 5]
     
     #<up_avg>= [#<up_avg>+#5063]
     ; probe down
-    G38.3 Z #<_ini[toolsensor]maxprobe> F5
+    G38.3 Z #<_ini[tool_change]max_probe_z> F5
     #<down_avg> = [#<down_avg>+#5063]
     #<loop_counter> = [#<loop_counter> + 1]
 O101 endwhile
@@ -111,8 +111,8 @@ M101 P #<_hal[gladevcp.cmd-stop-tool-change]>
 G90 (absolute)
 
 ; move back to toolchange position: z, then xy
-g53 g0 Z #<_ini[change_position]z>
-g53 g0 X #<_ini[change_position]x> Y #<_ini[change_position]y>
+g53 g0 Z #<_ini[tool_change]change_pos_z>
+g53 g0 X #<_ini[tool_change]change_pos_x> Y #<_ini[tool_change]change_pos_y>
 
 ; restore g20/21, g90/g91, feed
 O<restore> call [#<metric>] [#<absolute>] [#<feed>]
