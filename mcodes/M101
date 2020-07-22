@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ $# -eq 2 ]
+  then
+    halcmd setp gladevcp.gcode-parameter -1
+    sleep .1
+    halcmd setp gladevcp.gcode-parameter $2
+    sleep .1
+fi
+
+halcmd setp gladevcp.gcode-command 0
+sleep .1
+halcmd setp gladevcp.gcode-command $1
+sleep .1
+exit 0
