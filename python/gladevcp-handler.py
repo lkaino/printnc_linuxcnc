@@ -26,6 +26,24 @@ class HandlerClass:
         'cmd-tool-offset',
     ]
     
+    def _on_timer_tick(self, userdata=None):
+        s = linuxcnc.stat()
+        s.poll()
+        if self.rows_in_file > 0:
+            hal.set_p("gladevcp.file_progress", str(self.current_row * 100 / self.rows_in_file))
+        
+        if s.spindle_speed >= 0.01 or s.spindle_speed <= -0.01:
+            self.spindle_on_timer += 1
+        
+        seconds = self.spindle_on_timer
+        hours = int(seconds / 3600)
+        seconds -= hours * 3600
+        minutes = int(seconds / 60)
+        seconds -= minutes * 60
+        text = "%d:%02d:%02d" % (hours, minutes, seconds)
+        self.runtime.set_label(text)
+        return True
+    
     def update_current_tool(self, current_tool_index):
         # This does not work for some reason, the color is not redrawn
         for i in range(0, len(self.liststore1)):
@@ -59,9 +77,13 @@ class HandlerClass:
         s = linuxcnc.stat()
         s.poll()
         self.current_tool_index = -1
-        self.tools_in_file = self.get_tools_from_file(s.file)
+        self.tools_in_file, self.rows_in_file = self.get_tools_from_file(s.file)
+        self.num_of_tools.set(len(self.tools_in_file))
         self.update_tools_in_program(self.tools_in_file)
         self.ref_tool.set_state(True)
+    
+    def on_line_changed(self, stat, data=None):
+        self.current_row = data
         
     def __init__(self, halcomp,builder,useropts):
         self.inifile = linuxcnc.ini(os.environ["INI_FILE_NAME"])
@@ -82,6 +104,8 @@ class HandlerClass:
         
         self.gcode_command = hal_glib.GPin(halcomp.newpin("gcode-command", hal.HAL_FLOAT, hal.HAL_IN))
         self.gcode_param = hal_glib.GPin(halcomp.newpin("gcode-parameter", hal.HAL_FLOAT, hal.HAL_IN))
+        self.num_of_tools = hal_glib.GPin(halcomp.newpin("num_of_tools", hal.HAL_FLOAT, hal.HAL_IN))
+        
         self.gcode_command.connect("value-changed", self.command_from_gcode)
         self.gcode_param.connect("value-changed", self.parameter_from_gcode)
         
@@ -104,9 +128,24 @@ class HandlerClass:
         self.cell_operation.props.wrap_width = int(self.COL_TOOL_OPERATION_WIDTH * tool_table_width)
         
         self.current_tool_index = -1
+        self.spindle_rpm_bar = self.builder.get_object("spindle_speed")
+        
+        self.gcode_command = hal_glib.GPin(halcomp.newpin("spindle-target-speed", hal.HAL_FLOAT, hal.HAL_IN))
+        self.gcode_command.connect("value-changed", self.spindle_target_changed)
+        
+        self.file_progress_bar = self.builder.get_object("file_progress")
+        self.rows_in_file = 200
+        self.current_row = 0
+        self.spindle_on_timer = 0
+        glib.timeout_add_seconds(1, self._on_timer_tick)
+        
+        self.runtime = self.builder.get_object("runtime")
 
     def parameter_from_gcode(self, hal_pin, data = None):
         self.parameter = hal_pin.get()
+    
+    def spindle_target_changed(self, hal_pin, data = None):
+        self.spindle_rpm_bar.set_property("target_value", hal_pin.get())
     
     def command_from_gcode(self, hal_pin, data = None):
         value = hal_pin.get()
@@ -152,10 +191,11 @@ class HandlerClass:
     @staticmethod
     def get_tools_from_file(file):
         tools = []
+        num_of_lines = 0
         with open(file) as fp:
             operation = ''
             for line in fp:
-                
+                num_of_lines += 1
                 if '(' in line:
                     match = re.search('\((.*)\)', line)
                     if match and match.group(1):
@@ -166,7 +206,7 @@ class HandlerClass:
                     tool = int(match.group(1))
                     tools.append((tool, operation))
                     operation = ""
-        return tools
+        return tools, num_of_lines
                 
 def get_handlers(halcomp,builder,useropts):
     return [HandlerClass(halcomp,builder,useropts)]

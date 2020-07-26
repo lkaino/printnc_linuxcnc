@@ -8,6 +8,8 @@ net spindle-cw 		motion.spindle-forward	=> vfd.spindle-forward
 net spindle-ccw		motion.spindle-reverse	=> vfd.spindle-reverse
 net spindle-on		motion.spindle-on	=> vfd.spindle-on
 net spindle-speed-fb				<= vfd.spindle-speed-fb
+net spindle-current				<= vfd.OutA
+net spindle-comm-ok <= vfd.hycomm-ok
 
 net spindle-on         => parport.0.pin-17-out
 

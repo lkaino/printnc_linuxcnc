@@ -9,6 +9,13 @@ o<manual_change> sub
 #<absolute> = #<_absolute>
 #<feed> = #<_feed>
 
+; no need for tool change if less than 2 tools in program
+O50 if [#<_hal[gladevcp.num_of_tools]> LT 2]
+     (debug, No need for tool change, #<_hal[gladevcp.num_of_tools]> tools in program)
+     O<restore> call [#<metric>] [#<absolute>] [#<feed>]
+O50  return [1]
+O50  endif
+
 G21 (TLO and toolchange position is in mm as per ini)
 G90 (absolute)
 G49 (zero the current tool offset)

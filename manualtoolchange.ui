@@ -18,12 +18,14 @@
   <object class="EMC_Stat" id="vcp_stat1">
     <signal name="file-loaded" handler="on_file_loaded" swapped="no"/>
     <signal name="state-estop" handler="on_file_loaded" swapped="no"/>
+    <signal name="line-changed" handler="on_line_changed" swapped="no"/>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="window_position">mouse</property>
     <child>
       <object class="GtkFixed" id="fixed1">
+        <property name="width_request">350</property>
         <property name="height_request">400</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -33,25 +35,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkLabel" id="lbl_tools_in_program">
-                <property name="width_request">350</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Tools in current program</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                  <attribute name="scale" value="1.2"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="x">2</property>
-                <property name="y">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="width_request">350</property>
-                <property name="height_request">200</property>
+                <property name="height_request">235</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">never</property>
@@ -112,10 +98,12 @@
               </object>
               <packing>
                 <property name="x">2</property>
-                <property name="y">30</property>
               </packing>
             </child>
           </object>
+          <packing>
+            <property name="y">70</property>
+          </packing>
         </child>
         <child>
           <object class="GtkHSeparator" id="hseparator2">
@@ -125,7 +113,7 @@
           </object>
           <packing>
             <property name="x">20</property>
-            <property name="y">240</property>
+            <property name="y">405</property>
           </packing>
         </child>
         <child>
@@ -139,8 +127,8 @@
                 <child>
                   <object class="HAL_Button" id="btn_changed">
                     <property name="label" translatable="yes">Tool change ready</property>
-                    <property name="width_request">350</property>
-                    <property name="height_request">80</property>
+                    <property name="width_request">300</property>
+                    <property name="height_request">50</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -148,25 +136,8 @@
                     <property name="image_position">right</property>
                   </object>
                   <packing>
-                    <property name="x">5</property>
-                    <property name="y">90</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lbl_tool_change">
-                    <property name="width_request">350</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="ypad">5</property>
-                    <property name="label" translatable="yes">Tool change</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="1.2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="x">2</property>
-                    <property name="y">5</property>
+                    <property name="x">50</property>
+                    <property name="y">20</property>
                   </packing>
                 </child>
                 <child>
@@ -180,12 +151,13 @@
                   </object>
                   <packing>
                     <property name="x">20</property>
-                    <property name="y">35</property>
                   </packing>
                 </child>
                 <child>
                   <object class="HAL_CheckButton" id="reftool">
-                    <property name="label" translatable="yes">This is the reference tool</property>
+                    <property name="label" translatable="yes">REF</property>
+                    <property name="width_request">50</property>
+                    <property name="height_request">50</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -195,15 +167,14 @@ Please make sure that the tool length hasn't changed since!</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
-                    <property name="x">82</property>
-                    <property name="y">60</property>
+                    <property name="y">20</property>
                   </packing>
                 </child>
               </object>
             </child>
           </object>
           <packing>
-            <property name="y">250</property>
+            <property name="y">320</property>
           </packing>
         </child>
         <child>
@@ -214,8 +185,182 @@ Please make sure that the tool length hasn't changed since!</property>
             <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="y">500</property>
+            <property name="y">631</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkFixed" id="fixed4">
+            <property name="width_request">350</property>
+            <property name="height_request">150</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="width_request">40</property>
+                <property name="height_request">15</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">COM
+</property>
+              </object>
+              <packing>
+                <property name="x">6</property>
+                <property name="y">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="width_request">45</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">SPD</property>
+              </object>
+              <packing>
+                <property name="x">4</property>
+                <property name="y">80</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_LED" id="spindle_at_speed">
+                <property name="width_request">100</property>
+                <property name="height_request">80</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="led_blink_rate">0</property>
+                <property name="led_shape">2</property>
+                <property name="led_size">15</property>
+              </object>
+              <packing>
+                <property name="x">8</property>
+                <property name="y">100</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Graph" id="spindle_graph">
+                <property name="width_request">258</property>
+                <property name="height_request">103</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="bg_color">#ffffffffffff</property>
+                <property name="fg_color">#ffff00000000</property>
+                <property name="max">10</property>
+                <property name="period">240</property>
+                <property name="xticks">60</property>
+                <property name="yticks">1.5</property>
+              </object>
+              <packing>
+                <property name="x">92</property>
+                <property name="y">40</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_HBar" id="spindle_speed">
+                <property name="width_request">295</property>
+                <property name="height_request">25</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="bg_color">#bebebebebebe</property>
+                <property name="max">24000</property>
+                <property name="target_color">#a0a02020f0f0</property>
+                <property name="target_width">5</property>
+                <property name="text_template">%d</property>
+                <property name="z0_color">#0000ffff0000</property>
+                <property name="z1_color">#ffffffff0000</property>
+                <property name="z2_color">#ffff00000000</property>
+              </object>
+              <packing>
+                <property name="x">55</property>
+                <property name="y">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_LED" id="spindle_comm">
+                <property name="width_request">107</property>
+                <property name="height_request">80</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="led_blink_rate">0</property>
+                <property name="led_shape">2</property>
+                <property name="led_size">15</property>
+              </object>
+              <packing>
+                <property name="x">8</property>
+                <property name="y">34</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_VBar" id="spindle_current">
+                <property name="width_request">30</property>
+                <property name="height_request">103</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="bg_color">#bebebebebebe</property>
+                <property name="max">9</property>
+                <property name="show_limits">False</property>
+                <property name="target_color">#a0a02020f0f0</property>
+                <property name="text_template">%s A</property>
+                <property name="z0_color">#0000ffff0000</property>
+                <property name="z1_color">#ffffffff0000</property>
+                <property name="z2_color">#ffff00000000</property>
+              </object>
+              <packing>
+                <property name="x">55</property>
+                <property name="y">40</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="y">410</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator1">
+            <property name="width_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="x">20</property>
+            <property name="y">315</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFixed" id="fixed5">
+            <property name="width_request">350</property>
+            <property name="height_request">65</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="HAL_HBar" id="file_progress">
+                <property name="width_request">345</property>
+                <property name="height_request">20</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="bg_color">#bebebebebebe</property>
+                <property name="show_limits">False</property>
+                <property name="target_color">#a0a02020f0f0</property>
+                <property name="text_template">%d %%</property>
+                <property name="z0_color">#0000ffff0000</property>
+                <property name="z1_color">#ffffffff0000</property>
+                <property name="z2_color">#ffff00000000</property>
+              </object>
+              <packing>
+                <property name="x">5</property>
+                <property name="y">35</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="runtime">
+                <property name="width_request">150</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">0:00:00</property>
+                <attributes>
+                  <attribute name="scale" value="2"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
     </child>

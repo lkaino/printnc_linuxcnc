@@ -1,16 +1,17 @@
-T1 P1 D6.000000 ;6mm Flat Endmill wood
-T2 P2 D4.000000 Z-5.387958 ;XCAN: 4x4x50mm 90 degree
-T3 P3 D3.175000 ;3.175 mm compression end mill
-T4 P4 D4.000000 ;XCAN: 1 flute 4x28x50L Blue Coating
-T4 P4 D6.000000 ;XCAN: 1 flute 6x28x55L Blue Coating
-T4 P4 D6.000000 ;XCAN: 1 flute 6x42x70L Blue Coating
-T5 P5 D6.000000 ;BB: 2 flute R3x6x12x50
-T6 P6 D2.350000 ;Guling: 60 Degree Solid Carbide Thread Milling Cutter
-T7 P7 D3.175000 ;Drillpro: 3.175mm 1 Flute
-T8 P8 D3.175000 ;1/8 Inch Shank Single Flute
-T9 P9 D3.175000 ;2 flute quarter inch
-T10 P10 D4.000000 ;Drillpro: Rough End Mill 4 Flutes HRC55 	AlTiN Nano Coated
-T11 P11 D3.000000 ;Drillpro: 2 Flutes 90 Degree HRC45
-T11 P11 D6.000000 Z+8.833249 ;6mm Flat Endmill wood copy
-T12 P12 D2.000000 ;Ball Nose Tungsten Carbide HRC55 
-T13 P13 D8.000000 ;Xuhan: HRC50 2 Flute
+T1 P1 D8.000000 ;Xuhan: HRC50 2 Flute
+T2 P2 D3.000000 ;Drillpro: 2 Flutes 90 Degree HRC45
+T3 P3 D3.750000 ;XCAN: 1 flute 4x28x50L Blue Coating
+T4 P4 D2.000000 Z-3.519958 ;Ball Nose Tungsten Carbide HRC55 
+T5 P5 D6.000000 ;XCAN: 1 flute 6x28x55L Blue Coating
+T6 P6 D6.000000 ;XCAN: 1 flute 6x42x70L Blue Coating
+T7 P7 D4.000000 ;Drillpro: Rough End Mill 4 Flutes HRC55 	AlTiN Nano Coated
+T8 P8 D6.000000 ;BB: 2 flute R3x6x12x50
+T9 P9 D4.000000 ;XCAN: 4x4x50mm 90 degree
+T10 P10 D3.175000 ;3.175 mm compression end mill
+T11 P11 D8.000000 ;AHNO: AHNO 2 flute HRC55
+T12 P12 D2.350000 ;Guling: 60 Degree Solid Carbide Thread Milling Cutter
+T13 P13 D6.000000 ;AHNO: AHNO 2 flute HRC55
+T14 P14 D6.000000 ;AHNO: AHNO 3 flute aluminum
+T100 P100 D3.175000 ;2 flute quarter inch
+T101 P101 D3.175000 ;Drillpro: 3.175mm 1 Flute
+T102 P102 D3.175000 ;1/8 Inch Shank Single Flute
